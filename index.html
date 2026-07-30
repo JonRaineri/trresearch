@@ -354,7 +354,14 @@
             </div>
           </div>
         </div>
-        <form class="contact-form intake-form" id="contactForm">
+        <form class="contact-form intake-form" id="contactForm" action="https://formsubmit.co/raineri_jon@yahoo.com" method="POST">
+          <!-- Formsubmit config -->
+          <input type="hidden" name="_subject" value="New TR Research Protocol Request">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_next" value="https://trresearch.co/thankyou.html">
+          <input type="text" name="_honey" style="display:none">
+
           <div class="form-group">
             <label for="f-name">Full Name <span class="req">*</span></label>
             <input type="text" id="f-name" name="name" placeholder="John Doe" required>

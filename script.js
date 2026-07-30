@@ -75,8 +75,6 @@ waiverAgree.addEventListener('change', () => {
 const form = document.getElementById('contactForm');
 
 form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  
   // Validate age (must be 21+)
   const dob = new Date(form.dob.value);
   const today = new Date();
@@ -87,36 +85,21 @@ form.addEventListener('submit', (e) => {
   }
   
   if (age < 21) {
+    e.preventDefault();
     alert('You must be at least 21 years of age to use our services.');
     return;
   }
   
   if (!waiverAgree.checked) {
+    e.preventDefault();
     alert('You must read and agree to the Research Consulting Agreement & Liability Waiver.');
     return;
   }
   
+  // All good — let the form submit naturally to Formsubmit
   const btn = form.querySelector('button[type="submit"]');
-  const originalText = btn.textContent;
-  
   btn.textContent = 'SUBMITTING...';
   btn.disabled = true;
-  
-  setTimeout(() => {
-    btn.textContent = 'REQUEST SUBMITTED ✓';
-    btn.style.background = '#2D8B4E';
-    
-    setTimeout(() => {
-      btn.textContent = originalText;
-      btn.style.background = '';
-      btn.disabled = false;
-      form.reset();
-      waiverAgree.disabled = true;
-      waiverScrolledToBottom = false;
-      waiverHint.classList.remove('hidden');
-      submitBtn.disabled = true;
-    }, 3000);
-  }, 1500);
 });
 
 // ===== INTERSECTION OBSERVER FOR ANIMATIONS =====

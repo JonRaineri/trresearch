@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request Received | Team Raineri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .thankyou {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    .thankyou-content {
+      max-width: 600px;
+    }
+    .thankyou-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+    }
+    .thankyou h1 {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .thankyou p {
+      color: var(--gray-light);
+      font-size: 1.15rem;
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+    .thankyou .steps {
+      text-align: left;
+      background: var(--dark);
+      padding: 2rem;
+      margin: 2rem 0;
+      border: 1px solid rgba(201, 168, 76, 0.15);
+    }
+    .thankyou .steps h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: var(--gold);
+    }
+    .thankyou .steps li {
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      color: var(--gray-light);
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      list-style: none;
+    }
+    .thankyou .steps li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar scrolled">
+    <div class="nav-container">
+      <a href="/" class="nav-logo">
+        <img src="img/logo.jpg" alt="Team Raineri Logo">
+      </a>
+    </div>
+  </nav>
+
+  <section class="thankyou">
+    <div class="thankyou-content">
+      <div class="thankyou-icon">✓</div>
+      <h1>Request <span class="gold-text">Received</span></h1>
+      <p>Thank you for your interest in TR Research. Your consultation request has been submitted successfully.</p>
+      
+      <div class="steps">
+        <h3>What Happens Next</h3>
+        <ul>
+          <li>We'll review your submission within 24 hours</li>
+          <li>You'll receive an email with your custom protocol details</li>
+          <li>A payment link ($99 initial setup) will be included in our response</li>
+          <li>Once payment is confirmed, your protocol will be delivered via email</li>
+        </ul>
+      </div>
+
+      <p>Questions? Email us at <a href="mailto:raineri_jon@yahoo.com" style="color: var(--gold); text-decoration: none;">raineri_jon@yahoo.com</a></p>
+      
+      <a href="/" class="btn btn-outline" style="margin-top: 1rem;">← Back to Home</a>
+    </div>
+  </section>
+</body>
+</html>
