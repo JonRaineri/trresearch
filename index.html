@@ -6,7 +6,7 @@
   <title>Team Raineri | Research Peptide Consulting</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
   <!-- Navigation -->
@@ -399,12 +399,12 @@
             <textarea id="f-details" name="details" rows="3" placeholder="Any additional context about your research goals (optional)..."></textarea>
           </div>
 
-          <!-- Service Selection & Pay -->
+          <!-- Service Selection -->
           <div class="form-group full service-select-section">
-            <label>Select Your Service <span class="req">*</span></label>
+            <label>Select Your Services <span class="req">*</span></label>
             <div class="service-options" id="serviceOptions">
               <label class="service-option">
-                <input type="radio" name="service" value="initial" required>
+                <input type="checkbox" name="service_initial" value="initial">
                 <div class="service-option-card">
                   <div class="service-option-info">
                     <strong>Initial Protocol Setup</strong>
@@ -414,17 +414,23 @@
                 </div>
               </label>
               <label class="service-option">
-                <input type="radio" name="service" value="addon">
+                <input type="checkbox" name="service_addon" value="addon" id="addonCheckbox">
                 <div class="service-option-card">
                   <div class="service-option-info">
-                    <strong>Additional Compound Protocol</strong>
+                    <strong>Additional Compound Protocols</strong>
                     <span>Add-on to existing setup</span>
                   </div>
-                  <div class="service-option-price">$24.99</div>
+                  <div class="service-option-qty" id="addonQtyWrap" style="display:none;">
+                    <button type="button" class="qty-btn" id="addonMinus">−</button>
+                    <span class="qty-value" id="addonQty">1</span>
+                    <button type="button" class="qty-btn" id="addonPlus">+</button>
+                    <span class="qty-label">× $24.99</span>
+                  </div>
+                  <div class="service-option-price">$24.99<span class="price-each"> each</span></div>
                 </div>
               </label>
               <label class="service-option">
-                <input type="radio" name="service" value="monitoring">
+                <input type="checkbox" name="service_monitoring" value="monitoring">
                 <div class="service-option-card">
                   <div class="service-option-info">
                     <strong>Monthly Monitoring</strong>
@@ -433,6 +439,10 @@
                   <div class="service-option-price">$99/mo</div>
                 </div>
               </label>
+            </div>
+            <div class="service-total" id="serviceTotal" style="display:none;">
+              <span>Total: </span><strong id="totalAmount">$0</strong>
+              <span class="total-note" id="totalNote"></span>
             </div>
           </div>
 
@@ -539,6 +549,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=4"></script>
 </body>
 </html>

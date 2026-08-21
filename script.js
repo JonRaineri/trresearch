@@ -96,20 +96,13 @@ form.addEventListener('submit', (e) => {
     return;
   }
   
-  // Validate service selection
-  const selectedService = form.querySelector('input[name="service"]:checked');
-  if (!selectedService) {
+  // Validate at least one service selected
+  const checkedServices = form.querySelectorAll('.service-option input[type="checkbox"]:checked');
+  if (checkedServices.length === 0) {
     e.preventDefault();
-    alert('Please select a service before submitting.');
+    alert('Please select at least one service before submitting.');
     return;
   }
-
-  // Map service to Stripe payment link
-  const stripeLinks = {
-    'initial': 'https://buy.stripe.com/6oU00l1THg82anR4fH5kk00',
-    'addon': 'https://buy.stripe.com/9B6dRbaqd2hceE727z5kk01',
-    'monitoring': 'https://buy.stripe.com/6oUeVffKxf3YgMffYp5kk02'
-  };
 
   // Prevent default and submit via fetch, then redirect to Stripe
   e.preventDefault();
@@ -117,7 +110,36 @@ form.addEventListener('submit', (e) => {
   btn.textContent = 'SUBMITTING...';
   btn.disabled = true;
 
+  // Add addon quantity to form data
   const formData = new FormData(form);
+  const addonChecked = form.querySelector('input[name="service_addon"]').checked;
+  if (addonChecked) {
+    formData.set('addon_quantity', document.getElementById('addonQty').textContent);
+  }
+
+  // Build summary of selected services
+  const serviceNames = [];
+  if (form.querySelector('input[name="service_initial"]').checked) serviceNames.push('Initial Setup ($99)');
+  if (addonChecked) serviceNames.push('Add-on x' + document.getElementById('addonQty').textContent + ' ($24.99 each)');
+  if (form.querySelector('input[name="service_monitoring"]').checked) serviceNames.push('Monthly Monitoring ($99/mo)');
+  formData.set('services_selected', serviceNames.join(', '));
+
+  // Stripe links
+  const stripeLinks = {
+    'initial': 'https://buy.stripe.com/6oU00l1THg82anR4fH5kk00',
+    'addon': 'https://buy.stripe.com/9B6dRbaqd2hceE727z5kk01',
+    'monitoring': 'https://buy.stripe.com/6oUeVffKxf3YgMffYp5kk02'
+  };
+
+  // Determine which Stripe link to redirect to (prioritize initial > monitoring > addon)
+  let redirectTo = '';
+  if (form.querySelector('input[name="service_initial"]').checked) {
+    redirectTo = stripeLinks['initial'];
+  } else if (form.querySelector('input[name="service_monitoring"]').checked) {
+    redirectTo = stripeLinks['monitoring'];
+  } else if (addonChecked) {
+    redirectTo = stripeLinks['addon'];
+  }
 
   fetch(form.action, {
     method: 'POST',
@@ -126,7 +148,7 @@ form.addEventListener('submit', (e) => {
   })
   .then(response => {
     if (response.ok) {
-      window.location.href = stripeLinks[selectedService.value];
+      window.location.href = redirectTo;
     } else {
       alert('Something went wrong submitting the form. Please try again.');
       btn.textContent = 'Submit & Pay';
@@ -139,6 +161,58 @@ form.addEventListener('submit', (e) => {
     btn.disabled = false;
   });
 });
+
+// ===== SERVICE SELECTION LOGIC =====
+const addonCheckbox = document.getElementById('addonCheckbox');
+const addonQtyWrap = document.getElementById('addonQtyWrap');
+const addonQty = document.getElementById('addonQty');
+const addonMinus = document.getElementById('addonMinus');
+const addonPlus = document.getElementById('addonPlus');
+const serviceTotalEl = document.getElementById('serviceTotal');
+const totalAmountEl = document.getElementById('totalAmount');
+const totalNoteEl = document.getElementById('totalNote');
+
+let addonCount = 1;
+
+// Show/hide addon quantity when checked
+addonCheckbox.addEventListener('change', () => {
+  addonQtyWrap.style.display = addonCheckbox.checked ? 'flex' : 'none';
+  if (!addonCheckbox.checked) { addonCount = 1; addonQty.textContent = '1'; }
+  updateTotal();
+});
+
+addonMinus.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (addonCount > 1) { addonCount--; addonQty.textContent = addonCount; updateTotal(); }
+});
+
+addonPlus.addEventListener('click', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  addonCount++;
+  addonQty.textContent = addonCount;
+  updateTotal();
+});
+
+// Update total on any service checkbox change
+document.querySelectorAll('.service-option input[type="checkbox"]').forEach(cb => {
+  cb.addEventListener('change', updateTotal);
+});
+
+function updateTotal() {
+  let total = 0;
+  let hasMonthly = false;
+  
+  if (form.querySelector('input[name="service_initial"]').checked) total += 99;
+  if (addonCheckbox.checked) total += 24.99 * addonCount;
+  if (form.querySelector('input[name="service_monitoring"]').checked) { total += 99; hasMonthly = true; }
+  
+  const anyChecked = document.querySelectorAll('.service-option input[type="checkbox"]:checked').length > 0;
+  serviceTotalEl.style.display = anyChecked ? 'flex' : 'none';
+  totalAmountEl.textContent = '$' + total.toFixed(2);
+  totalNoteEl.textContent = hasMonthly ? '+ $99/mo recurring' : '';
+}
 
 // ===== INTERSECTION OBSERVER FOR ANIMATIONS =====
 const observerOptions = {

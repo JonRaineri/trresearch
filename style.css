@@ -1215,6 +1215,7 @@ h3 { font-size: 1.4rem; }
   cursor: pointer;
 }
 
+.service-option input[type="checkbox"],
 .service-option input[type="radio"] {
   display: none;
 }
@@ -1235,10 +1236,86 @@ h3 { font-size: 1.4rem; }
   background: rgba(201, 168, 76, 0.06);
 }
 
+.service-option input[type="checkbox"]:checked + .service-option-card,
 .service-option input[type="radio"]:checked + .service-option-card {
   border-color: var(--gold);
   background: rgba(201, 168, 76, 0.1);
   box-shadow: 0 0 0 1px var(--gold);
+}
+
+/* Quantity selector */
+.service-option-qty {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+  margin-right: 1rem;
+}
+
+.qty-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--gold);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.qty-btn:hover {
+  background: rgba(201, 168, 76, 0.15);
+  border-color: var(--gold);
+}
+
+.qty-value {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--white);
+  min-width: 20px;
+  text-align: center;
+}
+
+.qty-label {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  color: var(--gray-light);
+  white-space: nowrap;
+}
+
+.price-each {
+  font-size: 0.7rem;
+  color: var(--gray-light);
+}
+
+/* Service total */
+.service-total {
+  margin-top: 1rem;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 8px;
+  background: rgba(201, 168, 76, 0.05);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.service-total strong {
+  color: var(--gold);
+  font-size: 1.2rem;
+}
+
+.total-note {
+  font-size: 0.75rem;
+  color: var(--gray-light);
+  margin-left: auto;
 }
 
 .service-option-info {
