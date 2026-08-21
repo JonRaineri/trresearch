@@ -96,6 +96,21 @@ form.addEventListener('submit', (e) => {
     return;
   }
   
+  // Validate service selection
+  const selectedService = form.querySelector('input[name="service"]:checked');
+  if (!selectedService) {
+    e.preventDefault();
+    alert('Please select a service before submitting.');
+    return;
+  }
+
+  // Map service to Stripe payment link
+  const stripeLinks = {
+    'initial': 'https://buy.stripe.com/6oU00l1THg82anR4fH5kk00',
+    'addon': 'https://buy.stripe.com/9B6dRbaqd2hceE727z5kk01',
+    'monitoring': 'https://buy.stripe.com/6oUeVffKxf3YgMffYp5kk02'
+  };
+
   // Prevent default and submit via fetch, then redirect to Stripe
   e.preventDefault();
   const btn = form.querySelector('button[type="submit"]');
@@ -111,17 +126,16 @@ form.addEventListener('submit', (e) => {
   })
   .then(response => {
     if (response.ok) {
-      // Redirect to Stripe checkout
-      window.location.href = 'https://buy.stripe.com/6oU00l1THg82anR4fH5kk00';
+      window.location.href = stripeLinks[selectedService.value];
     } else {
       alert('Something went wrong submitting the form. Please try again.');
-      btn.textContent = 'Get Started';
+      btn.textContent = 'Submit & Pay';
       btn.disabled = false;
     }
   })
   .catch(() => {
     alert('Something went wrong submitting the form. Please try again.');
-    btn.textContent = 'Get Started';
+    btn.textContent = 'Submit & Pay';
     btn.disabled = false;
   });
 });

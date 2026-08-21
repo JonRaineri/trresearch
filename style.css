@@ -1199,6 +1199,76 @@ h3 { font-size: 1.4rem; }
 
 .protocol-link:hover { opacity: 0.7; }
 
+/* ===== SERVICE SELECT IN FORM ===== */
+.service-select-section {
+  margin-top: 1rem;
+}
+
+.service-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.service-option {
+  cursor: pointer;
+}
+
+.service-option input[type="radio"] {
+  display: none;
+}
+
+.service-option-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 8px;
+  background: rgba(201, 168, 76, 0.03);
+  transition: all 0.3s ease;
+}
+
+.service-option-card:hover {
+  border-color: rgba(201, 168, 76, 0.4);
+  background: rgba(201, 168, 76, 0.06);
+}
+
+.service-option input[type="radio"]:checked + .service-option-card {
+  border-color: var(--gold);
+  background: rgba(201, 168, 76, 0.1);
+  box-shadow: 0 0 0 1px var(--gold);
+}
+
+.service-option-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.service-option-info strong {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--white);
+  font-weight: 500;
+}
+
+.service-option-info span {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  color: var(--gray-light);
+}
+
+.service-option-price {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--gold);
+  font-weight: 600;
+  white-space: nowrap;
+  margin-left: 1rem;
+}
+
 .section-sub {
   color: var(--gray-light);
   font-size: 1.1rem;
