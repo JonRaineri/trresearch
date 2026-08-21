@@ -126,7 +126,7 @@ form.addEventListener('submit', (e) => {
 
   // Stripe links
   const stripeLinks = {
-    'initial': 'https://buy.stripe.com/6oU00l1THg82anR4fH5kk00',
+    'initial': 'https://buy.stripe.com/00w3cx7e1094brVbI95kk04',
     'addon': 'https://buy.stripe.com/9B6dRbaqd2hceE727z5kk01',
     'monitoring': 'https://buy.stripe.com/6oUeVffKxf3YgMffYp5kk02'
   };
