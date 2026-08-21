@@ -96,10 +96,34 @@ form.addEventListener('submit', (e) => {
     return;
   }
   
-  // All good — let the form submit naturally to Formsubmit
+  // Prevent default and submit via fetch, then redirect to Stripe
+  e.preventDefault();
   const btn = form.querySelector('button[type="submit"]');
   btn.textContent = 'SUBMITTING...';
   btn.disabled = true;
+
+  const formData = new FormData(form);
+
+  fetch(form.action, {
+    method: 'POST',
+    body: formData,
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(response => {
+    if (response.ok) {
+      // Redirect to Stripe checkout
+      window.location.href = 'https://buy.stripe.com/6oU00l1THg82anR4fH5kk00';
+    } else {
+      alert('Something went wrong submitting the form. Please try again.');
+      btn.textContent = 'Get Started';
+      btn.disabled = false;
+    }
+  })
+  .catch(() => {
+    alert('Something went wrong submitting the form. Please try again.');
+    btn.textContent = 'Get Started';
+    btn.disabled = false;
+  });
 });
 
 // ===== INTERSECTION OBSERVER FOR ANIMATIONS =====
