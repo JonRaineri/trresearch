@@ -6,7 +6,7 @@
   <title>Team Raineri | Research Peptide Consulting</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
   <!-- Navigation -->
@@ -361,8 +361,8 @@
             </div>
           </div>
         </div>
-        <form class="contact-form intake-form" id="contactForm" action="https://formspree.io/f/mojggryy" method="POST">
-          <input type="hidden" name="_subject" value="New TR Research Protocol Request">
+        <form class="contact-form intake-form" id="contactForm">
+          <!-- Form data saved to localStorage, submitted to Formspree only after Stripe payment succeeds -->
           <div class="form-group">
             <label for="f-name">Full Name <span class="req">*</span></label>
             <input type="text" id="f-name" name="name" placeholder="John Doe" required>
@@ -549,6 +549,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=5"></script>
+  <script src="script.js?v=6"></script>
 </body>
 </html>

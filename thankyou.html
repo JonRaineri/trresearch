@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Request Received | Team Raineri</title>
+  <title>Payment Confirmed | Team Raineri</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=5">
   <style>
     .thankyou {
       min-height: 100vh;
@@ -22,6 +22,7 @@
     .thankyou-icon {
       font-size: 4rem;
       margin-bottom: 1.5rem;
+      color: var(--gold);
     }
     .thankyou h1 {
       font-family: var(--font-display);
@@ -40,6 +41,7 @@
       padding: 2rem;
       margin: 2rem 0;
       border: 1px solid rgba(201, 168, 76, 0.15);
+      border-radius: 8px;
     }
     .thankyou .steps h3 {
       font-family: var(--font-display);
@@ -62,6 +64,26 @@
       left: 0;
       color: var(--gold);
     }
+    .order-summary {
+      text-align: left;
+      background: rgba(201, 168, 76, 0.05);
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      color: var(--gray-light);
+      display: none;
+    }
+    .order-summary strong {
+      color: var(--white);
+    }
+    .order-summary .order-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.35rem 0;
+    }
   </style>
 </head>
 <body>
@@ -76,16 +98,22 @@
   <section class="thankyou">
     <div class="thankyou-content">
       <div class="thankyou-icon">✓</div>
-      <h1>Request <span class="gold-text">Received</span></h1>
-      <p>Thank you for your interest in TR Research. Your consultation request has been submitted successfully.</p>
+      <h1>Payment <span class="gold-text">Confirmed</span></h1>
+      <p>Thank you for your payment. Your consultation request and payment have been received successfully.</p>
+
+      <div class="order-summary" id="orderSummary">
+        <div class="order-row"><strong>Name:</strong> <span id="sumName"></span></div>
+        <div class="order-row"><strong>Email:</strong> <span id="sumEmail"></span></div>
+        <div class="order-row"><strong>Services:</strong> <span id="sumServices"></span></div>
+      </div>
       
       <div class="steps">
         <h3>What Happens Next</h3>
         <ul>
           <li>We'll review your submission within 24 hours</li>
-          <li>You'll receive an email with your custom protocol details</li>
-          <li>A payment link ($99 initial setup) will be included in our response</li>
-          <li>Once payment is confirmed, your protocol will be delivered via email</li>
+          <li>You'll receive your custom protocol via email</li>
+          <li>Your protocol is designed specifically for your goals</li>
+          <li>Reach out anytime with questions</li>
         </ul>
       </div>
 
@@ -94,5 +122,54 @@
       <a href="/" class="btn btn-outline" style="margin-top: 1rem;">← Back to Home</a>
     </div>
   </section>
+
+  <script>
+    // After successful payment, submit the saved form data to Formspree
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('payment') !== 'success') return;
+
+      const saved = localStorage.getItem('tr_pending_form');
+      if (!saved) return;
+
+      const data = JSON.parse(saved);
+
+      // Show order summary
+      const summary = document.getElementById('orderSummary');
+      document.getElementById('sumName').textContent = data.name || '';
+      document.getElementById('sumEmail').textContent = data.email || '';
+      document.getElementById('sumServices').textContent = data.services_selected || '';
+      summary.style.display = 'block';
+
+      // Submit to Formspree
+      const formData = new FormData();
+      formData.append('name', data.name);
+      formData.append('email', data.email);
+      formData.append('dob', data.dob);
+      formData.append('height', data.height);
+      formData.append('weight', data.weight);
+      formData.append('goal', data.goal);
+      formData.append('details', data.details || '');
+      formData.append('services_selected', data.services_selected);
+      formData.append('addon_quantity', data.addon_quantity || '0');
+      formData.append('payment_status', 'PAID');
+      formData.append('_subject', 'New PAID Protocol Request - ' + data.name);
+
+      fetch('https://formspree.io/f/mojggryy', {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(resp => {
+        if (resp.ok) {
+          localStorage.removeItem('tr_pending_form');
+          console.log('Form data submitted to Formspree after payment.');
+        } else {
+          console.error('Formspree submission failed.');
+        }
+      })
+      .catch(err => console.error('Formspree error:', err));
+    })();
+  </script>
 </body>
 </html>

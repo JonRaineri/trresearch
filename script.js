@@ -104,25 +104,32 @@ form.addEventListener('submit', (e) => {
     return;
   }
 
-  // Prevent default and submit via fetch, then redirect to Stripe
   e.preventDefault();
   const btn = form.querySelector('button[type="submit"]');
-  btn.textContent = 'SUBMITTING...';
+  btn.textContent = 'REDIRECTING TO PAYMENT...';
   btn.disabled = true;
 
-  // Add addon quantity to form data
-  const formData = new FormData(form);
+  // Build service summary
   const addonChecked = form.querySelector('input[name="service_addon"]').checked;
-  if (addonChecked) {
-    formData.set('addon_quantity', document.getElementById('addonQty').textContent);
-  }
-
-  // Build summary of selected services
   const serviceNames = [];
   if (form.querySelector('input[name="service_initial"]').checked) serviceNames.push('Initial Setup ($99)');
   if (addonChecked) serviceNames.push('Add-on x' + document.getElementById('addonQty').textContent + ' ($24.99 each)');
   if (form.querySelector('input[name="service_monitoring"]').checked) serviceNames.push('Monthly Monitoring ($99/mo)');
-  formData.set('services_selected', serviceNames.join(', '));
+
+  // Save form data to localStorage (submitted to Formspree AFTER payment succeeds)
+  const formObj = {
+    name: form.name.value,
+    email: form.email.value,
+    dob: form.dob.value,
+    height: form.height.value,
+    weight: form.weight.value,
+    goal: form.goal.value,
+    details: form.details.value,
+    services_selected: serviceNames.join(', '),
+    addon_quantity: addonChecked ? document.getElementById('addonQty').textContent : '0',
+    timestamp: new Date().toISOString()
+  };
+  localStorage.setItem('tr_pending_form', JSON.stringify(formObj));
 
   // Stripe links
   const stripeLinks = {
@@ -131,7 +138,7 @@ form.addEventListener('submit', (e) => {
     'monitoring': 'https://buy.stripe.com/6oUeVffKxf3YgMffYp5kk02'
   };
 
-  // Determine which Stripe link to redirect to (prioritize initial > monitoring > addon)
+  // Redirect to Stripe (prioritize initial > monitoring > addon)
   let redirectTo = '';
   if (form.querySelector('input[name="service_initial"]').checked) {
     redirectTo = stripeLinks['initial'];
@@ -141,25 +148,7 @@ form.addEventListener('submit', (e) => {
     redirectTo = stripeLinks['addon'];
   }
 
-  fetch(form.action, {
-    method: 'POST',
-    body: formData,
-    headers: { 'Accept': 'application/json' }
-  })
-  .then(response => {
-    if (response.ok) {
-      window.location.href = redirectTo;
-    } else {
-      alert('Something went wrong submitting the form. Please try again.');
-      btn.textContent = 'Submit & Pay';
-      btn.disabled = false;
-    }
-  })
-  .catch(() => {
-    alert('Something went wrong submitting the form. Please try again.');
-    btn.textContent = 'Submit & Pay';
-    btn.disabled = false;
-  });
+  window.location.href = redirectTo;
 });
 
 // ===== SERVICE SELECTION LOGIC =====
