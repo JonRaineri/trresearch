@@ -96,25 +96,10 @@ form.addEventListener('submit', (e) => {
     return;
   }
   
-  // Validate at least one service selected
-  const checkedServices = form.querySelectorAll('.service-option input[type="checkbox"]:checked');
-  if (checkedServices.length === 0) {
-    e.preventDefault();
-    alert('Please select at least one service before submitting.');
-    return;
-  }
-
   e.preventDefault();
   const btn = form.querySelector('button[type="submit"]');
   btn.textContent = 'REDIRECTING TO PAYMENT...';
   btn.disabled = true;
-
-  // Build service summary
-  const addonChecked = form.querySelector('input[name="service_addon"]').checked;
-  const serviceNames = [];
-  if (form.querySelector('input[name="service_initial"]').checked) serviceNames.push('Initial Setup ($99)');
-  if (addonChecked) serviceNames.push('Add-on x' + document.getElementById('addonQty').textContent + ' ($24.99 each)');
-  if (form.querySelector('input[name="service_monitoring"]').checked) serviceNames.push('Monthly Monitoring ($99/mo)');
 
   // Save form data to localStorage (submitted to Formspree AFTER payment succeeds)
   const formObj = {
@@ -125,83 +110,14 @@ form.addEventListener('submit', (e) => {
     weight: form.weight.value,
     goal: form.goal.value,
     details: form.details.value,
-    services_selected: serviceNames.join(', '),
-    addon_quantity: addonChecked ? document.getElementById('addonQty').textContent : '0',
+    services_selected: 'Initial Setup ($99)',
     timestamp: new Date().toISOString()
   };
   localStorage.setItem('tr_pending_form', JSON.stringify(formObj));
 
-  // Stripe links
-  const stripeLinks = {
-    'initial': 'https://buy.stripe.com/00w3cx7e1094brVbI95kk04',
-    'addon': 'https://buy.stripe.com/9B6dRbaqd2hceE727z5kk01',
-    'monitoring': 'https://buy.stripe.com/6oUeVffKxf3YgMffYp5kk02'
-  };
-
-  // Redirect to Stripe (prioritize initial > monitoring > addon)
-  let redirectTo = '';
-  if (form.querySelector('input[name="service_initial"]').checked) {
-    redirectTo = stripeLinks['initial'];
-  } else if (form.querySelector('input[name="service_monitoring"]').checked) {
-    redirectTo = stripeLinks['monitoring'];
-  } else if (addonChecked) {
-    redirectTo = stripeLinks['addon'];
-  }
-
-  window.location.href = redirectTo;
+  // Redirect to $99 Initial Setup Stripe checkout
+  window.location.href = 'https://buy.stripe.com/00w3cx7e1094brVbI95kk04';
 });
-
-// ===== SERVICE SELECTION LOGIC =====
-const addonCheckbox = document.getElementById('addonCheckbox');
-const addonQtyWrap = document.getElementById('addonQtyWrap');
-const addonQty = document.getElementById('addonQty');
-const addonMinus = document.getElementById('addonMinus');
-const addonPlus = document.getElementById('addonPlus');
-const serviceTotalEl = document.getElementById('serviceTotal');
-const totalAmountEl = document.getElementById('totalAmount');
-const totalNoteEl = document.getElementById('totalNote');
-
-let addonCount = 1;
-
-// Show/hide addon quantity when checked
-addonCheckbox.addEventListener('change', () => {
-  addonQtyWrap.style.display = addonCheckbox.checked ? 'flex' : 'none';
-  if (!addonCheckbox.checked) { addonCount = 1; addonQty.textContent = '1'; }
-  updateTotal();
-});
-
-addonMinus.addEventListener('click', (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  if (addonCount > 1) { addonCount--; addonQty.textContent = addonCount; updateTotal(); }
-});
-
-addonPlus.addEventListener('click', (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  addonCount++;
-  addonQty.textContent = addonCount;
-  updateTotal();
-});
-
-// Update total on any service checkbox change
-document.querySelectorAll('.service-option input[type="checkbox"]').forEach(cb => {
-  cb.addEventListener('change', updateTotal);
-});
-
-function updateTotal() {
-  let total = 0;
-  let hasMonthly = false;
-  
-  if (form.querySelector('input[name="service_initial"]').checked) total += 99;
-  if (addonCheckbox.checked) total += 24.99 * addonCount;
-  if (form.querySelector('input[name="service_monitoring"]').checked) { total += 99; hasMonthly = true; }
-  
-  const anyChecked = document.querySelectorAll('.service-option input[type="checkbox"]:checked').length > 0;
-  serviceTotalEl.style.display = anyChecked ? 'flex' : 'none';
-  totalAmountEl.textContent = '$' + total.toFixed(2);
-  totalNoteEl.textContent = hasMonthly ? '+ $99/mo recurring' : '';
-}
 
 // ===== INTERSECTION OBSERVER FOR ANIMATIONS =====
 const observerOptions = {
